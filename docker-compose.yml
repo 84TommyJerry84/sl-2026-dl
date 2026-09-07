@@ -11,5 +11,12 @@ services:
     volumes:
       - minio_data:/data
 
+  python:
+    build: .
+    env_file:
+      - config/.env
+    volumes:
+      - ./data:/app/data:ro
+
 volumes:
   minio_data:
