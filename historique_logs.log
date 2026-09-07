@@ -1,0 +1,12 @@
+2026-09-07 16:48:33,288 - INFO - Le bucket 'test-data' a été créé
+2026-09-07 16:48:33,311 - INFO - Le fichier 'data\test.txt' a été envoyé dans le bucket 'test-data' sous le nom 'test.txt'
+2026-09-07 16:48:33,320 - INFO - L'objet 'test.txt' a été lu depuis le bucket 'test-data'
+2026-09-07 16:48:33,320 - INFO - Contenu de l'objet : Bonjour MinIO
+
+2026-09-07 16:48:33,321 - INFO - main exécutée en 0.23 secondes
+2026-09-07 16:58:10,221 - INFO - Le bucket 'test-data' existe déjà
+2026-09-07 16:58:10,238 - INFO - Le fichier 'data\test.txt' a été envoyé dans le bucket 'test-data' sous le nom 'test.txt'
+2026-09-07 16:58:10,242 - INFO - L'objet 'test.txt' a été lu depuis le bucket 'test-data'
+2026-09-07 16:58:10,242 - INFO - Contenu de l'objet : Bonjour MinIO
+
+2026-09-07 16:58:10,243 - INFO - main exécutée en 0.22 secondes
