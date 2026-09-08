@@ -1,2 +1,6 @@
 .env/
-.env
+config/.env
+__pycache__/
+*.py[cod]
+.ruff_cache/
+historique.log
