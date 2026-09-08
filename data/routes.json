@@ -1,0 +1,32 @@
+[
+    {
+        "route_id": "route_1",
+        "route_short_name": "T3a",
+        "route_type": 0,
+        "stops": [
+            {
+                "stop_id": "stop_1",
+                "stop_name": "Porte de Vincennes"
+            },
+            {
+                "stop_id": "stop_2",
+                "stop_name": "Porte de Montreuil"
+            }
+        ]
+    },
+    {
+        "route_id": "route_2",
+        "route_short_name": "T3b",
+        "route_type": 0,
+        "stops": [
+            {
+                "stop_id": "stop_3",
+                "stop_name": "Porte de Pantin"
+            },
+            {
+                "stop_id": "stop_4",
+                "stop_name": "Porte de la Villette"
+            }
+        ]
+    }
+]

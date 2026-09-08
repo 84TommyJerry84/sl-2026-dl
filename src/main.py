@@ -7,10 +7,15 @@ from src.minio_client import (
     read_object,
     upload_file,
 )
+from src.mongo_client import create_mongo_client, load_json_documents
+
+mongo_database = os.environ["MONGO_DATABASE"]
+mongo_collection = os.environ["MONGO_COLLECTION"]
+mongo_json_file = os.environ["MONGO_JSON_FILE"]
 
 
 def main():
-    """Run the MinIO discovery workflow."""
+    """Exécute le workflow de découverte de MinIO."""
     bucket_name = os.environ["MINIO_BUCKET"]
     file_path = os.environ["MINIO_TEST_FILE"]
     object_name = os.environ["MINIO_TEST_OBJECT"]
@@ -33,9 +38,21 @@ def main():
             object_name,
         )
 
-        logger.info(f"Contenu de l'objet : {content.decode('utf-8')}")
+        logger.info("Objet relu : %s octets", len(content))
     finally:
         s3_client.close()
+
+    mongo_client = create_mongo_client()
+
+    try:
+        load_json_documents(
+            mongo_client,
+            mongo_database,
+            mongo_collection,
+            mongo_json_file,
+        )
+    finally:
+        mongo_client.close()
 
 
 if __name__ == "__main__":
