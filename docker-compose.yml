@@ -1,12 +1,21 @@
 services:
   minio:
     image: minio/minio
+
     ports:
       - "9000:9000"
       - "9001:9001"
+
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
@@ -14,23 +23,58 @@ services:
   python:
     build: .
     env_file:
-      - config/.env
+      - config/.env    
+    depends_on:
+      minio:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
     volumes:
       - ./data:/app/data:ro
 
   mongo:
     image: mongo
+
     ports:
       - "27017:27017"
+
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh --quiet --username $$MONGO_INITDB_ROOT_USERNAME --password $$MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin --eval \"db.adminCommand('ping')\"",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   
   processor:
     build: .
     env_file:
       - config/.env
+    depends_on:
+      minio:
+        condition: service_healthy
+      python:
+        condition: service_completed_successfully
     command: ["python", "-m", "src.process_main"]
+  
+  loader:
+    build: .
+    env_file:
+      - config/.env
+    command: ["python", "-m", "src.load_main"]
+    depends_on:
+      minio:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      processor:
+        condition: service_completed_successfully
 
 volumes:
   minio_data:

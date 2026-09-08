@@ -37,9 +37,9 @@ def main():
 
         upload_file(
             s3_client,
-            raw_bucket,
+            bucket_name,
             file_path,
-            raw_object,
+            object_name,
         )
 
         content = read_object(
@@ -54,7 +54,7 @@ def main():
             s3_client,
             raw_bucket,
             file_path,
-            object_name,
+            raw_object,
         )
     finally:
         s3_client.close()
