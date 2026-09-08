@@ -7,7 +7,12 @@ from src.minio_client import (
     read_object,
     upload_file,
 )
-from src.mongo_client import create_mongo_client, load_json_documents
+from src.mongo_client import (
+    aggregate_stops_by_route,
+    create_mongo_client,
+    find_route,
+    load_json_documents,
+)
 
 mongo_database = os.environ["MONGO_DATABASE"]
 mongo_collection = os.environ["MONGO_COLLECTION"]
@@ -19,17 +24,22 @@ def main():
     bucket_name = os.environ["MINIO_BUCKET"]
     file_path = os.environ["MINIO_TEST_FILE"]
     object_name = os.environ["MINIO_TEST_OBJECT"]
+    raw_bucket = os.environ["MINIO_RAW_BUCKET"]
+    curated_bucket = os.environ["MINIO_CURATED_BUCKET"]
+    raw_object = os.environ["MINIO_RAW_OBJECT"]
 
     s3_client = create_s3_client()
 
     try:
         ensure_bucket(s3_client, bucket_name)
+        ensure_bucket(s3_client, raw_bucket)
+        ensure_bucket(s3_client, curated_bucket)
 
         upload_file(
             s3_client,
-            bucket_name,
+            raw_bucket,
             file_path,
-            object_name,
+            raw_object,
         )
 
         content = read_object(
@@ -39,6 +49,13 @@ def main():
         )
 
         logger.info("Objet relu : %s octets", len(content))
+
+        upload_file(
+            s3_client,
+            raw_bucket,
+            file_path,
+            object_name,
+        )
     finally:
         s3_client.close()
 
@@ -51,6 +68,12 @@ def main():
             mongo_collection,
             mongo_json_file,
         )
+
+        collection = mongo_client[mongo_database][mongo_collection]
+
+        find_route(collection, "T3a")
+
+        aggregate_stops_by_route(collection)
     finally:
         mongo_client.close()
 

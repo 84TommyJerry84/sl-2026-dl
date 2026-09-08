@@ -50,6 +50,21 @@ def upload_file(s3_client, bucket_name, file_path, object_name):
     )
 
 
+def download_file(s3_client, bucket_name, object_name, file_path):
+    """Télécharge un objet MinIO dans un fichier local."""
+    s3_client.download_file(
+        Bucket=bucket_name,
+        Key=object_name,
+        Filename=file_path,
+    )
+
+    logger.info(
+        "L'objet '%s' a été téléchargé depuis le bucket '%s'",
+        object_name,
+        bucket_name,
+    )
+
+
 def read_object(s3_client, bucket_name, object_name):
     """Lit un objet depuis un bucket MinIO et retourne son contenu."""
     response = s3_client.get_object(

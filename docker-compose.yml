@@ -25,6 +25,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+  
+  processor:
+    build: .
+    env_file:
+      - config/.env
+    command: ["python", "-m", "src.process_main"]
 
 volumes:
   minio_data:
