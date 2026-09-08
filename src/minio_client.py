@@ -72,7 +72,12 @@ def read_object(s3_client, bucket_name, object_name):
         Key=object_name,
     )
 
-    content = response["Body"].read()
+    body = response["Body"]
+
+    try:
+        content = body.read()
+    finally:
+        body.close()
 
     logger.info(
         "L'objet '%s' a été lu depuis le bucket '%s'",

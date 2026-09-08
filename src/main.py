@@ -14,19 +14,20 @@ from src.mongo_client import (
     load_json_documents,
 )
 
-mongo_database = os.environ["MONGO_DATABASE"]
-mongo_collection = os.environ["MONGO_COLLECTION"]
-mongo_json_file = os.environ["MONGO_JSON_FILE"]
-
 
 def main():
-    """Exécute le workflow de découverte de MinIO."""
+    """Exécute la partie 1 et dépose le Parquet dans la zone raw."""
     bucket_name = os.environ["MINIO_BUCKET"]
     file_path = os.environ["MINIO_TEST_FILE"]
     object_name = os.environ["MINIO_TEST_OBJECT"]
+
     raw_bucket = os.environ["MINIO_RAW_BUCKET"]
     curated_bucket = os.environ["MINIO_CURATED_BUCKET"]
     raw_object = os.environ["MINIO_RAW_OBJECT"]
+
+    mongo_database = os.environ["MONGO_DATABASE"]
+    mongo_collection = os.environ["MONGO_COLLECTION"]
+    mongo_json_file = os.environ["MONGO_JSON_FILE"]
 
     s3_client = create_s3_client()
 

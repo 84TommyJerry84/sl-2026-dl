@@ -9,7 +9,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
       interval: 5s
@@ -17,18 +17,22 @@ services:
       retries: 5
 
     command: server /data --console-address ":9001"
+
     volumes:
       - minio_data:/data
 
   python:
     build: .
+
     env_file:
-      - config/.env    
+      - config/.env
+
     depends_on:
       minio:
         condition: service_healthy
       mongo:
         condition: service_healthy
+
     volumes:
       - ./data:/app/data:ro
 
@@ -51,23 +55,29 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
+
   processor:
     build: .
+
     env_file:
       - config/.env
+
     depends_on:
       minio:
         condition: service_healthy
       python:
         condition: service_completed_successfully
+
     command: ["python", "-m", "src.process_main"]
-  
+
   loader:
     build: .
+
     env_file:
       - config/.env
+
     command: ["python", "-m", "src.load_main"]
+
     depends_on:
       minio:
         condition: service_healthy
